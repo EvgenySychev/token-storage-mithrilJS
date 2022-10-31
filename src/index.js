@@ -3,32 +3,21 @@ import {v4 as uuidv4} from 'uuid';
 
 let root = document.body
 
-let data = [
-    {
-        "id": 1,
-        "domain": "https://tra-ta-ta1.ru",
-        "value": "1234-4567-8901-0000",
-        "organizationName": "One"
-    },
-    {
-        "id": 2,
-        "domain": "https://tra-ta-ta2.ru",
-        "value": "1234-4567-8902-0000",
-        "organizationName": "Two"
-    },
-    {
-        "id": 3,
-        "domain": "https://tra-ta-ta3.ru",
-        "value": "1234-4567-8903-0000",
-        "organizationName": "Three"
-    },
-    {
-        "id": 4,
-        "domain": "https://tra-ta-ta4.ru",
-        "value": "1234-4567-8904-0000",
-        "organizationName": "Four"
+let Data = {
+    token: {
+        list: [],
+        fetch: function() {
+            m.request({
+                method: "GET",
+                url: "../data.json",
+            })
+                .then(function(items) {
+                    Data.token.list = items
+                    console.log(Data.token.list)
+                })
+        }
     }
-]
+}
 
 let domainName = null
 let organizationName = null
@@ -42,7 +31,7 @@ const oninputDomain = (e) => {
 }
 
 const addToken = () => {
-    data.push({
+    Data.token.list.push({
         id: uuidv4(),
         domain: domainName,
         value: uuidv4(),
@@ -58,7 +47,7 @@ const deleteToken = (t) => {
 
     let deleteToken = confirm("delete token?")
     if (deleteToken) {
-        data = data.filter(f => f.id !== t.id)
+        Data.token.list = Data.token.list.filter(f => f.id !== t.id)
         m.route.set('/tokens', {})
     } else {
         m.route.set('/tokens', {})
@@ -66,6 +55,7 @@ const deleteToken = (t) => {
 }
 
 const StickyTable = {
+
     view() {
         return m('table.sticky-table',
             m('thead',
@@ -82,7 +72,7 @@ const StickyTable = {
                 ),
             ),
             m('tbody',
-                data.map(t => m('tr', [
+                Data.token.list.map(t => m('tr', [
                         m('td', t.domain
                         ),
                         m('td', t.value
@@ -122,6 +112,7 @@ let TokenList = {
 }
 
 let Layout = {
+    oninit: Data.token.fetch,
     view: (vnode) => m('div',
         [
             m('button', {onclick: () => m.route.set('/tokens', {})}, 'Token List'),
