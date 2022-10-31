@@ -1,6 +1,59 @@
 import m from "mithril";
+import {v4 as uuidv4} from 'uuid';
 
 let root = document.body
+
+let data = [
+    {
+        "id": 1,
+        "domain": "https://tra-ta-ta1.ru",
+        "value": "1234-4567-8901-0000",
+        "organizationName": "One"
+    },
+    {
+        "id": 2,
+        "domain": "https://tra-ta-ta2.ru",
+        "value": "1234-4567-8902-0000",
+        "organizationName": "Two"
+    },
+    {
+        "id": 3,
+        "domain": "https://tra-ta-ta3.ru",
+        "value": "1234-4567-8903-0000",
+        "organizationName": "Three"
+    },
+    {
+        "id": 4,
+        "domain": "https://tra-ta-ta4.ru",
+        "value": "1234-4567-8904-0000",
+        "organizationName": "Four"
+    }
+]
+
+let domainName = null
+let organizationName = null
+
+const oninputOrganizationName = (e) => {
+    organizationName = e.target.value
+}
+
+const oninputDomain = (e) => {
+    domainName = e.target.value
+}
+
+const addToken = () => {
+    data.push({
+        id: uuidv4(),
+        domain: domainName,
+        value: '1234-4321',
+        organizationName: organizationName
+    })
+}
+
+const deleteToken = (t) => {
+    alert('ADD')
+    console.log(t)
+}
 
 const StickyTable = {
     view() {
@@ -12,41 +65,42 @@ const StickyTable = {
                         m('th', "data.value"
                         ),
                         m('th', "data.organizationName"
+                        ),
+                        m('th', "action"
                         )
                     ]
                 ),
             ),
-            m('tbody', [
-                    m('tr', [
-                            m('td', '22222'
-                            ),
-                            m('td', '111111'
-                            ),
-                            m('td', '44444444'
-                            ),
-                            m('td', '7777'
-                            )
-                        ]
-                    ),
-                    m('tr', [
-                            m('td', '5555555555'
-                            ),
-                            m('td', '777777777'
-                            ),
-                            m('td', '8888888'
-                            ),
-                            m('td', '9999999'
-                            )
-                        ]
-                    )
-                ]
+            m('tbody',
+                data.map(t => m('tr', [
+                        m('td', t.domain
+                        ),
+                        m('td', t.value
+                        ),
+                        m('td', t.organizationName
+                        ),
+                        m('td', m('button', {onclick: () => deleteToken()}, "DELETE")
+                        )
+                    ]
+                ))
             )
         )
     }
 }
 
 let AddTokenPage = {
-    view: () => m('p', 'Add Token Page')
+    view: () => m('div', [
+            m('input', {
+                placeholder: 'Type domain...',
+                oninput: oninputDomain
+            }),
+            m('input', {
+                placeholder: 'Type organization name...',
+                oninput: oninputOrganizationName
+            }),
+            m('button', {onclick: addToken}, 'ADD')
+        ]
+    )
 }
 
 let TokenList = {
@@ -61,13 +115,9 @@ let DeleteToken = {
 let Layout = {
     view: (vnode) => m('div',
         [
-            /*  m('button',*/
             m('button', {onclick: () => m.route.set('/tokens', {})}, 'Token List'),
-            /*m('a[href=/token-storage-mithriljs/#!/tokens]', {oncreate: m.route.link}, 'Token List')),*/
-
             m('button', {onclick: () => m.route.set('/add-token', {})}, 'Add Token Page'),
-            m('a[href=/token-storage-mithriljs/#!/delete]', {oncreate: m.route.link}, 'Delete'),
-
+            m('button', {onclick: () => m.route.set('/delete', {})}, 'Delete'),
         ],
         m('.layout', vnode.children)
     )
