@@ -45,14 +45,24 @@ const addToken = () => {
     data.push({
         id: uuidv4(),
         domain: domainName,
-        value: '1234-4321',
+        value: uuidv4(),
         organizationName: organizationName
     })
+    organizationName = ''
+    domainName = ''
+    alert('token was added')
+    m.route.set('/tokens', {})
 }
 
 const deleteToken = (t) => {
-    alert('ADD')
-    console.log(t)
+
+    let deleteToken = confirm("delete token?")
+    if (deleteToken) {
+        data = data.filter(f => f.id !== t.id)
+        m.route.set('/tokens', {})
+    } else {
+        m.route.set('/tokens', {})
+    }
 }
 
 const StickyTable = {
@@ -60,13 +70,13 @@ const StickyTable = {
         return m('table.sticky-table',
             m('thead',
                 m('tr', [
-                        m('th', "data.domain"
+                        m('th', "Domain name"
                         ),
-                        m('th', "data.value"
+                        m('th', "Token"
                         ),
-                        m('th', "data.organizationName"
+                        m('th', "Organization name"
                         ),
-                        m('th', "action"
+                        m('th', "Action"
                         )
                     ]
                 ),
@@ -79,7 +89,7 @@ const StickyTable = {
                         ),
                         m('td', t.organizationName
                         ),
-                        m('td', m('button', {onclick: () => deleteToken()}, "DELETE")
+                        m('td', m('button', {onclick: () => deleteToken(t)}, "DELETE")
                         )
                     ]
                 ))
@@ -92,10 +102,12 @@ let AddTokenPage = {
     view: () => m('div', [
             m('input', {
                 placeholder: 'Type domain...',
+                value: domainName,
                 oninput: oninputDomain
             }),
             m('input', {
                 placeholder: 'Type organization name...',
+                value: organizationName,
                 oninput: oninputOrganizationName
             }),
             m('button', {onclick: addToken}, 'ADD')
@@ -108,18 +120,14 @@ let TokenList = {
         m(StickyTable),
     )
 }
-let DeleteToken = {
-    view: () => m('p', 'Delete Token')
-}
 
 let Layout = {
     view: (vnode) => m('div',
         [
             m('button', {onclick: () => m.route.set('/tokens', {})}, 'Token List'),
             m('button', {onclick: () => m.route.set('/add-token', {})}, 'Add Token Page'),
-            m('button', {onclick: () => m.route.set('/delete', {})}, 'Delete'),
         ],
-        m('.layout', vnode.children)
+        m('.layout', vnode.children),
     )
 }
 
@@ -129,8 +137,5 @@ m.route(root, '/tokens', {
     },
     '/add-token': {
         render: () => m(Layout, m(AddTokenPage))
-    },
-    '/delete': {
-        render: () => m(Layout, m(DeleteToken))
     }
 })
