@@ -1,7 +1,7 @@
 import m from "mithril";
 import {v4 as uuidv4} from 'uuid';
 
-let root = document.body
+const root = document.body
 
 let Data = {
     token: {
@@ -54,9 +54,9 @@ const deleteToken = (t) => {
     }
 }
 
-const StickyTable = {
+const DataTable = {
 
-    view() {
+    view: () => {
         return m('table.sticky-table',
             m('thead',
                 m('tr', [
@@ -88,7 +88,7 @@ const StickyTable = {
     }
 }
 
-let AddTokenPage = {
+const AddTokenPage = {
     view: () => m('div', [
             m('input', {
                 placeholder: 'Type domain...',
@@ -105,13 +105,13 @@ let AddTokenPage = {
     )
 }
 
-let TokenList = {
+const TokenList = {
     view: () => m('div',
-        m(StickyTable),
+        m(DataTable),
     )
 }
 
-let Layout = {
+const Layout = {
     oninit: Data.token.fetch,
     view: (vnode) => m('div',
         [
