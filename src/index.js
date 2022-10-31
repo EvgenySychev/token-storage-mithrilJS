@@ -13,7 +13,6 @@ let Data = {
             })
                 .then(function(items) {
                     Data.token.list = items
-                    console.log(Data.token.list)
                 })
         }
     }
@@ -31,6 +30,7 @@ const oninputDomain = (e) => {
 }
 
 const addToken = () => {
+
     Data.token.list.push({
         id: uuidv4(),
         domain: domainName,
@@ -118,7 +118,7 @@ const Layout = {
             m('button', {onclick: () => m.route.set('/tokens', {})}, 'Token List'),
             m('button', {onclick: () => m.route.set('/add-token', {})}, 'Add Token Page'),
         ],
-        m('.layout', vnode.children),
+        m('div', vnode.children),
     )
 }
 
