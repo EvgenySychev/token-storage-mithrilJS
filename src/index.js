@@ -3,16 +3,16 @@ import {v4 as uuidv4} from 'uuid';
 
 const root = document.body
 
-let Data = {
+let data = {
     token: {
         list: [],
-        fetch: function() {
+        fetch: () => {
             m.request({
                 method: "GET",
                 url: "../data.json",
             })
-                .then(function(items) {
-                    Data.token.list = items
+                .then(function (items) {
+                    data.token.list = items
                 })
         }
     }
@@ -31,7 +31,7 @@ const oninputDomain = (e) => {
 
 const addToken = () => {
 
-    Data.token.list.push({
+    data.token.list.push({
         id: uuidv4(),
         domain: domainName,
         value: uuidv4(),
@@ -47,7 +47,7 @@ const deleteToken = (t) => {
 
     let deleteToken = confirm("delete token?")
     if (deleteToken) {
-        Data.token.list = Data.token.list.filter(f => f.id !== t.id)
+        data.token.list = data.token.list.filter(f => f.id !== t.id)
         m.route.set('/tokens', {})
     } else {
         m.route.set('/tokens', {})
@@ -72,7 +72,7 @@ const DataTable = {
                 ),
             ),
             m('tbody',
-                Data.token.list.map(t => m('tr', [
+                data.token.list.map(t => m('tr', [
                         m('td', t.domain
                         ),
                         m('td', t.value
@@ -89,19 +89,39 @@ const DataTable = {
 }
 
 const AddTokenPage = {
-    view: () => m('div', [
-            m('input', {
-                placeholder: 'Type domain...',
-                value: domainName,
-                oninput: oninputDomain
-            }),
-            m('input', {
-                placeholder: 'Type organization name...',
-                value: organizationName,
-                oninput: oninputOrganizationName
-            }),
-            m('button', {onclick: addToken}, 'ADD')
-        ]
+    view: () => m('div',
+        m('table',
+            m('thead',
+                m('tr', [
+                        m('th', "Domain name"
+                        ),
+                        m('th', "Organization name"
+                        ),
+                        m('th', "Action"
+                        )
+                    ]
+                ),
+            ),
+            m('tbody',
+                m('tr', [
+                    m('td', m('input', {
+                            placeholder: 'Type domain...',
+                            value: domainName,
+                            oninput: oninputDomain
+                        })
+                    ),
+                    m('td', m('input', {
+                            placeholder: 'Type organization name...',
+                            value: organizationName,
+                            oninput: oninputOrganizationName
+                        })
+                    ),
+                    m('td', m('button', {onclick: addToken}, 'ADD')
+                    ),
+                    ]
+                )
+            )
+        )
     )
 }
 
@@ -112,7 +132,7 @@ const TokenList = {
 }
 
 const Layout = {
-    oninit: Data.token.fetch,
+    oninit: data.token.fetch,
     view: (vnode) => m('div',
         [
             m('button', {onclick: () => m.route.set('/tokens', {})}, 'Token List'),
